@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  # Any warning from rustc fails the build, in every job below.
+  RUSTFLAGS: -D warnings
+
+jobs:
+  # The unit tests and doctests only run on the host; the crate is no_std but
+  # its tests need `std` for the mock I2C bus.
+  test:
+    name: test (host, stable)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: cargo test (no default features)
+        run: cargo test --no-default-features
+      - name: cargo test (all features)
+        run: cargo test --all-features
+
+  # Proves the crate really is no_std: this target has no std at all, so a
+  # stray `use std::` cannot pass here even if the host tests are green.
+  cross:
+    name: build (thumbv7em-none-eabihf)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: thumbv7em-none-eabihf
+      - uses: Swatinem/rust-cache@v2
+      - name: cargo build (no default features)
+        run: cargo build --target thumbv7em-none-eabihf --no-default-features
+      - name: cargo build (all features, i.e. with defmt)
+        run: cargo build --target thumbv7em-none-eabihf --all-features
+
+  lint:
+    name: fmt, clippy, doc
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - name: cargo fmt --check
+        run: cargo fmt --all --check
+      - name: cargo clippy (all features)
+        run: cargo clippy --all-targets --all-features -- -D warnings
+      - name: cargo clippy (no default features)
+        run: cargo clippy --all-targets --no-default-features -- -D warnings
+      - name: cargo doc
+        run: cargo doc --no-deps --all-features
+        env:
+          RUSTDOCFLAGS: -D warnings
+
+  # The declared `rust-version` is a promise; this is the job that keeps it one.
+  msrv:
+    name: msrv (1.81)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.81
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo check --all-features

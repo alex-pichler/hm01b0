@@ -1,0 +1,6 @@
+/target
+
+# `Cargo.lock` is committed on purpose. Cargo ignores a library's lockfile when
+# the library is used as a dependency, so this constrains nobody downstream; it
+# only pins what CI and `git bisect` build, which is exactly what you want from
+# a repository that carries hardware-derived constants.

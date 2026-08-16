@@ -1,0 +1,28 @@
+[package]
+name = "hm01b0"
+version = "0.1.0"
+edition = "2021"
+# `core::error::Error` (used by `Error`) was stabilised in 1.81; that is the
+# highest floor anything in this crate imposes. See CHANGELOG.md.
+rust-version = "1.81"
+license = "MIT OR Apache-2.0"
+description = "Platform-agnostic embedded-hal 1.0 driver for the Himax HM01B0 Bayer-CFA image sensor"
+keywords = ["embedded-hal-driver", "camera", "sensor", "himax", "hm01b0"]
+categories = ["embedded", "hardware-support", "no-std"]
+readme = "README.md"
+repository = "https://github.com/alex-pichler/hm01b0"
+
+[dependencies]
+embedded-hal = "1.0"
+defmt = { version = "1.0", optional = true }
+
+[features]
+default = []
+## Derive `defmt::Format` on the public enums, structs and the error type.
+defmt = ["dep:defmt"]
+
+[package.metadata.docs.rs]
+all-features = true
+
+[lints.rust]
+missing_docs = "deny"
