@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-08-16
+
 Initial release: a platform-agnostic `no_std` `embedded-hal` 1.0 driver for the
 Himax HM01B0, covering sensor control over I2C. Its power-on configuration is
 the one coralmicro uses on the Coral Dev Board Micro.
@@ -23,7 +25,7 @@ the one coralmicro uses on the Coral Dev Board Micro.
   `cfa_color_at`, BGGR in raw-frame coordinates.
 - `TriggerLine<P>` for the sensor's external trigger, which is a board GPIO
   rather than a register.
-- The `registers` module: every address the vendor driver uses, with
+- The `registers` module: every address the power-on configuration uses, with
   provenance, plus the three datasheet-only registers manual exposure needs.
 - `defmt`: derive `defmt::Format` on the public types. Off by default.
 - Host tests against a mock I2C bus that records transactions.
@@ -34,4 +36,5 @@ the one coralmicro uses on the Coral Dev Board Micro.
 - Not (yet) implemented: windowing and subsampling (QVGA, QQVGA), pixel-clock
   configuration and `embedded-hal-async`.
 
-[Unreleased]: https://github.com/alex-pichler/hm01b0/commits/main
+[Unreleased]: https://github.com/alex-pichler/hm01b0/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/alex-pichler/hm01b0/releases/tag/v0.1.0

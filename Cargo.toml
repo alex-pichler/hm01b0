@@ -11,6 +11,8 @@ keywords = ["embedded-hal-driver", "camera", "sensor", "himax", "hm01b0"]
 categories = ["embedded", "hardware-support", "no-std"]
 readme = "README.md"
 repository = "https://github.com/alex-pichler/hm01b0"
+# Repository scaffolding, of no use to anyone depending on this crate.
+exclude = [".github", ".gitignore"]
 
 [dependencies]
 embedded-hal = "1.0"
